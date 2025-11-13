@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hướng Nghiệp THCS - Hiểu mình, chọn đúng nghề</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div id="app"></div>
+    
+    <!-- Hướng dẫn cấu hình -->
+    <div style="position: fixed; top: 10px; right: 10px; background: #fef3c7; border: 2px solid #f59e0b; padding: 15px; border-radius: 8px; max-width: 300px; font-size: 12px; z-index: 9999;">
+        <strong>⚠️ CẤU HÌNH GOOGLE SHEETS:</strong><br>
+        1. Mở file HTML này bằng editor<br>
+        2. Tìm: <code>GOOGLE_SCRIPT_URL</code><br>
+        3. Thay YOUR_URL bằng URL Apps Script<br>
+        4. Save và deploy lên hosting<br>
+        <button onclick="this.parentElement.style.display='none'" style="margin-top: 10px; background: #f59e0b; color: white; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer;">Đóng</button>
+    </div>
+
+    <script>
+        // ⚠️ THAY ĐỔI URL NÀY
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzDfuxCwY8FP-2BrZpqrxAryDhQnaeNiegq6wV7z_I/dev';
+        
+        // Storage helper (dùng localStorage thay vì window.storage)
+        const storage = {
+            get: (key) => {
+                const value = localStorage.getItem(key);
+                return value ? { value } : null;
+            },
+            set: (key, value) => {
+                localStorage.setItem(key, value);
+                return { value };
+            }
+        };
+
+        // Simple app để demo
+        const app = document.getElementById('app');
+        
+        function renderHome() {
+            app.innerHTML = `
+                <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+                    <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white py-20 text-center">
+                        <h1 class="text-5xl font-bold mb-4">✨ Hiểu mình, chọn đúng nghề</h1>
+                        <p class="text-xl mb-8">Khám phá bản thân qua bài trắc nghiệm Holland RIASEC</p>
+                        <button onclick="startTest()" class="bg-white text-indigo-600 px-8 py-4 rounded-full font-bold text-lg hover:bg-yellow-300 transition-all">
+                            Bắt đầu trắc nghiệm
+                        </button>
+                    </div>
+                    
+                    <div class="max-w-6xl mx-auto p-6 grid md:grid-cols-3 gap-6">
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <div class="text-4xl mb-4">📚</div>
+                            <h3 class="text-xl font-bold mb-2">Bài Trắc Nghiệm</h3>
+                            <p class="text-gray-600">30 câu hỏi khoa học Holland RIASEC</p>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <div class="text-4xl mb-4">💼</div>
+                            <h3 class="text-xl font-bold mb-2">Khám Phá Nghề</h3>
+                            <p class="text-gray-600">Tìm hiểu các ngành nghề phù hợp</p>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <div class="text-4xl mb-4">🎯</div>
+                            <h3 class="text-xl font-bold mb-2">Mục Tiêu</h3>
+                            <p class="text-gray-600">Lập kế hoạch cho tương lai</p>
+                        </div>
+                    </div>
+
+                    <div class="max-w-4xl mx-auto p-6 mt-8">
+                        <div class="bg-white rounded-xl shadow-lg p-8 text-center">
+                            <h3 class="text-2xl font-bold mb-4">📖 Hướng Dẫn Sử Dụng File Này</h3>
+                            <div class="text-left space-y-4 text-gray-700">
+                                <p><strong>File HTML này là bản demo đơn giản.</strong> Để có đầy đủ tính năng:</p>
+                                
+                                <div class="bg-blue-50 p-4 rounded-lg">
+                                    <p class="font-bold mb-2">📥 Cách 1: Download code từ Artifact</p>
+                                    <ol class="list-decimal list-inside space-y-1 text-sm">
+                                        <li>Quay lại artifact "Web Hướng Nghiệp THCS"</li>
+                                        <li>Click nút 3 chấm → View code</li>
+                                        <li>Copy toàn bộ code React</li>
+                                        <li>Tạo project React mới hoặc dùng CodeSandbox</li>
+                                    </ol>
+                                </div>
+
+                                <div class="bg-green-50 p-4 rounded-lg">
+                                    <p class="font-bold mb-2">🚀 Cách 2: Deploy nhanh với Vercel</p>
+                                    <ol class="list-decimal list-inside space-y-1 text-sm">
+                                        <li>Tạo tài khoản tại <a href="https://vercel.com" class="text-blue-600 underline">vercel.com</a></li>
+                                        <li>Import code từ GitHub</li>
+                                        <li>Deploy tự động trong 1 phút</li>
+                                        <li>Nhận URL để tạo QR code</li>
+                                    </ol>
+                                </div>
+
+                                <div class="bg-yellow-50 p-4 rounded-lg">
+                                    <p class="font-bold mb-2">⚙️ Cấu hình Google Sheets</p>
+                                    <ol class="list-decimal list-inside space-y-1 text-sm">
+                                        <li>Tạo Google Sheet mới</li>
+                                        <li>Extensions → Apps Script</li>
+                                        <li>Copy code Apps Script (xem artifact hướng dẫn)</li>
+                                        <li>Deploy → Copy URL</li>
+                                        <li>Thay vào biến GOOGLE_SCRIPT_URL</li>
+                                    </ol>
+                                </div>
+
+                                <div class="bg-purple-50 p-4 rounded-lg">
+                                    <p class="font-bold mb-2">💡 Cần hỗ trợ?</p>
+                                    <p class="text-sm">Hỏi tôi: "Hướng dẫn chi tiết deploy website lên Vercel"</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function startTest() {
+            alert('🎉 Đây là bản demo!\n\nĐể có đầy đủ tính năng bài test 30 câu, vui lòng:\n\n1. Quay lại artifact "Web Hướng Nghiệp THCS"\n2. Sử dụng trực tiếp trên Claude\n\nHoặc deploy code React lên hosting để có URL riêng!');
+        }
+
+        // Render app
+        renderHome();
+    </script>
+</body>
+</html>
